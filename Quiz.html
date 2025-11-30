@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    body {
+        font-family: Arial;
+        background: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+    .quiz-box {
+        width: 420px;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    }
+    h2 { text-align: center; margin-bottom: 20px; }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #ddd;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .progress {
+        height: 8px;
+        width: 0%;
+        background: #2196F3;
+        border-radius: 10px;
+    }
+
+    .option {
+        padding: 10px;
+        border: 1px solid #777;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .option:hover {
+        background: #e9e9e9;
+    }
+    .selected {
+        background: #cce5ff;
+        border-color: #007bff;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #0d6efd;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0b5ed7;
+    }
+</style>
+</head>
+<body>
+
+<div class="quiz-box">
+    <h2>Quiz App</h2>
+
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+
+    <div id="question-box">
+        <!-- Question will load here -->
+    </div>
+
+    <button id="nextBtn">Next</button>
+</div>
+
+<script>
+let questions = [
+    {
+        q: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: "JavaScript"
+    },
+    {
+        q: "Which language is used for styling web pages?",
+        options: ["HTML", "jQuery", "CSS", "XML"],
+        answer: "CSS"
+    },
+    {
+        q: "What does HTML stand for?",
+        options: ["Hyper Text Makeup Language", "Hyper Tool Markup Language", "Hyper Text Markup Language", "Home Tool Markup Language"],
+        answer: "Hyper Text Markup Language"
+    },
+    {
+        q: "Which company developed Java?",
+        options: ["Apple", "Microsoft", "Sun Microsystems", "Google"],
+        answer: "Sun Microsystems"
+    },
+    {
+        q: "Which symbol is used for comments in JavaScript?",
+        options: ["//", "/* */", "#", "<!-- -->"],
+        answer: "//"
+    }
+];
+
+let currentIndex = 0;
+let score = 0;
+let selectedOption = "";
+
+// Load question
+function loadQuestion() {
+    let q = questions[currentIndex];
+    let html = `
+        <h3>${currentIndex + 1}. ${q.q}</h3>
+        ${q.options.map(opt => `<div class='option'>${opt}</div>`).join("")}
+    `;
+    $("#question-box").html(html);
+    selectedOption = "";
+
+    $(".progress").css("width", ((currentIndex) / questions.length) * 100 + "%");
+}
+
+// On option select
+$(document).on("click", ".option", function() {
+    $(".option").removeClass("selected");
+    $(this).addClass("selected");
+    selectedOption = $(this).text();
+});
+
+// Next button
+$("#nextBtn").click(function() {
+    if (selectedOption === "") {
+        alert("Please select an option!");
+        return;
+    }
+
+    if (selectedOption === questions[currentIndex].answer) {
+        score++;
+    }
+
+    currentIndex++;
+
+    if (currentIndex < questions.length) {
+        loadQuestion();
+    } else {
+        showResult();
+    }
+});
+
+// Show final score
+function showResult() {
+    $(".quiz-box").html(`
+        <h2>Quiz Completed!</h2>
+        <h3>Your Score: ${score} / ${questions.length}</h3>
+        <button onclick="location.reload()">Restart Quiz</button>
+    `);
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
